@@ -1,6 +1,6 @@
 env:
    global:
-     - CONAN_REFERENCE: "ogre/1.10.11.0"
+     - CONAN_REFERENCE: "OGRE/1.10.11.0"
      - CONAN_USERNAME: "sunxfancy"
      - CONAN_LOGIN_USERNAME: "sunxfancy"
      - CONAN_CHANNEL: "ci"

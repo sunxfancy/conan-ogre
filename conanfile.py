@@ -88,7 +88,7 @@ class OgreConan(ConanFile):
         }
         if not os.path.exists('build'):
             os.mkdir('build')
-        cmake.configure(source_folder=srcDir, build_folder='build')
+        cmake.configure(defs=options, source_folder=srcDir, build_folder='build')
         cmake.build(target='install')
 
     def package(self):

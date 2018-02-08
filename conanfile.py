@@ -59,7 +59,6 @@ class OgreConan(ConanFile):
         self.output.info('download {}'.format(url))
         filename = os.path.basename(url)
         if not os.path.isfile(os.path.join(self.source_folder, filename)):
-            print(os.path.join(self.source_folder, filename))
             download(url, filename)
         unzip(filename)
         # os.unlink(filename)
@@ -76,6 +75,7 @@ class OgreConan(ConanFile):
             'OGRE_BUILD_TOOLS': False,
             'OGRE_INSTALL_PDB': False,
             'OGRE_CONFIG_THREADS': 2,
+            'OGRE_BUILD_SAMPLES': self.options.build_samples,
             'OGRE_USE_STD11': self.options.use_cpp11,
             'OGRE_STATIC': not self.options.shared,
             'OGRE_BUILD_PLUGIN_CG': self.options.with_cg,

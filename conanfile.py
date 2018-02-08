@@ -23,7 +23,7 @@ class OgreConan(ConanFile):
     }
     default_options = (
         "shared=True",
-        "use_cpp11=True",
+        "use_cpp11=False",
         "with_boost=False",
         "with_poco=False",
         "with_cg=False",
@@ -72,9 +72,8 @@ class OgreConan(ConanFile):
         self.installDir = os.path.join(self.source_folder, 'install')
         options = {
             'OGRE_BUILD_TESTS': False,
-            'OGRE_BUILD_TOOLS': False,
+            'OGRE_BUILD_TOOLS': True,
             'OGRE_INSTALL_PDB': False,
-            'OGRE_CONFIG_THREADS': 2,
             'OGRE_BUILD_SAMPLES': self.options.build_samples,
             'OGRE_USE_STD11': self.options.use_cpp11,
             'OGRE_STATIC': not self.options.shared,
@@ -99,7 +98,7 @@ class OgreConan(ConanFile):
         self.copy(pattern="*.h", dst="include/OGRE", src=include_dir)
         self.copy("*.lib", dst="lib", src=lib_dir, keep_path=False)
         self.copy("*.a", dst="lib", src=lib_dir, keep_path=False)
-        self.copy("*.so*", dst="lib", src=lib_dir, keep_path=False, links=True)
+        self.copy("*.so*", dst="lib", src=lib_dir, keep_path=False)
         self.copy("*.dylib", dst="lib", src=lib_dir, keep_path=False)
         self.copy("*.dll", dst="bin", src=bin_dir, keep_path=False)
 

@@ -6,10 +6,13 @@ if __name__ == "__main__":
     builder = ConanMultiPackager()
     builder.add_common_builds(shared_option_name="OGRE:shared", pure_c=False)
     # Disable VS2010 because of missing DirectX stuff
-    builder.builds = [
-        [settings, options, env_vars, build_requires]
-        for settings, options, env_vars, build_requires in builder.builds
-        if (not (settings["compiler"] == "Visual Studio" and settings["compiler.version"] == "10") or not (settings['arch'] == 'x86')) 
-    ]
+
+    # Keep only Release builds
+    filtered_builds = []
+    for settings, options, env_vars, build_requires, reference in builder.items:
+        if settings["build_type"] == "Release" and settings["arch"] == "x86_64" and not (settings["compiler"] == "Visual Studio" and settings["compiler.version"] == "10"):
+             filtered_builds.append([settings, options, env_vars, build_requires])
+    builder.builds = filtered_builds
+
     builder.run()
 

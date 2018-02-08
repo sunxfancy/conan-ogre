@@ -15,14 +15,22 @@ class OgreConan(ConanFile):
         "use_cpp11": [True, False],
         "with_boost": [True, False],
         "with_poco": [True, False],
-        "with_cg": [True, False]
+        "with_cg": [True, False],
+        "with_jni": [True, False],
+        "with_python": [True, False],
+        "build_samples": [True, False],
+        "node_legacy": ['Map', 'Vector']
     }
     default_options = (
         "shared=True",
         "use_cpp11=True",
         "with_boost=False",
         "with_poco=False",
-        "with_cg=True"
+        "with_cg=False",
+        "with_jni=False",
+        "with_python=False",
+        "build_samples=False",
+        "node_legacy=Vector"
     )
     
     url = "http://github.com/sunxfancy/conan-ogre"
@@ -67,6 +75,14 @@ class OgreConan(ConanFile):
             'OGRE_BUILD_TESTS': False,
             'OGRE_BUILD_TOOLS': False,
             'OGRE_INSTALL_PDB': False,
+            'OGRE_CONFIG_THREADS': 2,
+            'OGRE_USE_STD11': self.options.use_cpp11,
+            'OGRE_STATIC': not self.options.shared,
+            'OGRE_BUILD_PLUGIN_CG': self.options.with_cg,
+            'OGRE_BUILD_COMPONENT_PYTHON': self.options.with_python,
+            'OGRE_BUILD_COMPONENT_JAVA': self.options.with_jni,
+            'OGRE_NODE_STORAGE_LEGACY': (self.options.node_legacy == "Map"),
+            'OGRE_USE_POCO': self.options.with_poco,
             'OGRE_USE_BOOST': self.options.with_boost,
             'CMAKE_INSTALL_PREFIX:': self.installDir
         }

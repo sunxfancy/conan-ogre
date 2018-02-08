@@ -45,9 +45,9 @@ class OgreConan(ConanFile):
         if self.settings.os == 'Linux':
             installer = SystemPackageTool()
             if self.settings.arch == 'x86':
-                installer.install("libxmu-dev:i386 libxaw7-dev:i386 libxt-dev:i386 libxrandr-dev:i386")
+                installer.install("libgles2-mesa-dev:i386 libxmu-dev:i386 libxaw7-dev:i386 libxt-dev:i386 libxrandr-dev:i386 libsdl2-dev:i386")
             elif self.settings.arch == 'x86_64':
-                installer.install("libxmu-dev:amd64 libxaw7-dev:amd64 libxt-dev:amd64 libxrandr-dev:amd64")
+                installer.install("libgles2-mesa-dev:amd64 libxmu-dev:amd64 libxaw7-dev:amd64 libxt-dev:amd64 libxrandr-dev:amd64 libsdl2-dev:amd64")
 
     def extractFromUrl(self, url):
         self.output.info('download {}'.format(url))

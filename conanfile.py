@@ -45,15 +45,9 @@ class OgreConan(ConanFile):
         if self.settings.os == 'Linux':
             installer = SystemPackageTool()
             if self.settings.arch == 'x86':
-                installer.install("libxmu-dev:i386")
-                installer.install("libxaw7-dev:i386")
-                installer.install("libxt-dev:i386")
-                installer.install("libxrandr-dev:i386")
+                installer.install("libxmu-dev:i386 libxaw7-dev:i386 libxt-dev:i386 libxrandr-dev:i386")
             elif self.settings.arch == 'x86_64':
-                installer.install("libxmu-dev:amd64")
-                installer.install("libxaw7-dev:amd64")
-                installer.install("libxt-dev:amd64")
-                installer.install("libxrandr-dev:amd64")
+                installer.install("libxmu-dev:amd64 libxaw7-dev:amd64 libxt-dev:amd64 libxrandr-dev:amd64")
 
     def extractFromUrl(self, url):
         self.output.info('download {}'.format(url))
@@ -95,12 +89,16 @@ class OgreConan(ConanFile):
         include_dir = os.path.join(sdk_dir, 'include', 'OGRE')
         lib_dir = os.path.join(sdk_dir, 'lib')
         bin_dir = os.path.join(sdk_dir, 'bin')
+        dependency_dir = os.path.join(self.build_folder, 'build', 'Dependencies', 'lib')
         self.copy(pattern="*.h", dst="include/OGRE", src=include_dir)
         self.copy("*.lib", dst="lib", src=lib_dir, keep_path=False)
         self.copy("*.a", dst="lib", src=lib_dir, keep_path=False)
         self.copy("*.so*", dst="lib", src=lib_dir, keep_path=False)
         self.copy("*.dylib", dst="lib", src=lib_dir, keep_path=False)
         self.copy("*.dll", dst="bin", src=bin_dir, keep_path=False)
+        self.copy("*.so*", dst="lib", src=dependency_dir, keep_path=False)
+        self.copy("*.dylib", dst="lib", src=dependency_dir, keep_path=False)
+        self.copy("*.dll", dst="bin", src=dependency_dir, keep_path=False)
 
     def package_info(self):
         self.cpp_info.libs = [
@@ -109,7 +107,9 @@ class OgreConan(ConanFile):
             'OgrePaging',
             'OgreProperty',
             'OgreRTShaderSystem',
-            'OgreTerrain'
+            'OgreTerrain',
+            'freetype',
+            'zzip'
         ]
 
         is_apple = (self.settings.os == 'Macos' or self.settings.os == 'iOS')

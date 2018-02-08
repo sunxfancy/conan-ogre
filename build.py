@@ -9,7 +9,7 @@ if __name__ == "__main__":
     builder.builds = [
         [settings, options, env_vars, build_requires]
         for settings, options, env_vars, build_requires in builder.builds
-        if not (settings["compiler"] == "Visual Studio" and settings["compiler.version"] == "10")
+        if (not (settings["compiler"] == "Visual Studio" and settings["compiler.version"] == "10") or not (settings['arch'] == 'x86')) 
     ]
     builder.run()
 

@@ -4,7 +4,7 @@ import os
 
 class OgreConan(ConanFile):
     name = "OGRE"
-    version = "1.10.11.0"
+    version = "1.10.11"
     description = "Open Source 3D Graphics Engine"
     folder = 'ogre-1.10.11'
     generators = "cmake"
@@ -22,7 +22,7 @@ class OgreConan(ConanFile):
         "node_legacy": ['Map', 'Vector']
     }
     default_options = (
-        "shared=True",
+        "shared=False",
         "use_cpp11=False",
         "with_boost=False",
         "with_poco=False",
@@ -67,6 +67,7 @@ class OgreConan(ConanFile):
             'OGRE_BUILD_TESTS': False,
             'OGRE_BUILD_TOOLS': True,
             'OGRE_INSTALL_PDB': False,
+            'OGRE_BUILD_LIBS_AS_FRAMEWORKS': False,
             'OGRE_BUILD_SAMPLES': self.options.build_samples,
             'OGRE_USE_STD11': self.options.use_cpp11,
             'OGRE_STATIC': not self.options.shared,
@@ -82,14 +83,7 @@ class OgreConan(ConanFile):
         cmake.install()
 
     def package_info(self):
-        is_apple = (self.settings.os == 'Macos' or self.settings.os == 'iOS')
-       
-        if is_apple:
-            self.cpp_info.libs = [
-                'freetype',
-                'zzip'
-            ]
-        else:
+        if self.options.shared:
             self.cpp_info.libs = [
                 'OgreMain',
                 'OgreOverlay',
@@ -100,7 +94,24 @@ class OgreConan(ConanFile):
                 'freetype',
                 'zzip'
             ]
-            if self.settings.build_type == "Debug":
-                self.cpp_info.libs = [lib + '_d' for lib in self.cpp_info.libs]
-            if self.settings.os == 'Linux':
-                self.cpp_info.libs.append('rt')
+        else:
+            self.cpp_info.libs = [
+                'OgreMainStatic',
+                'OgreOverlayStatic',
+                'OgrePagingStatic',
+                'OgrePropertyStatic',
+                'OgreRTShaderSystemStatic',
+                'OgreTerrainStatic',
+                'freetype',
+                'zzip'
+            ]
+        if self.settings.build_type == "Debug":
+            self.cpp_info.libs = [lib + '_d' for lib in self.cpp_info.libs]
+        if self.settings.os == 'Linux':
+            self.cpp_info.libs.append('rt')
+
+        if self.settings.os == 'Macos':
+            self.cpp_info.libs.append("z")
+            self.cpp_info.exelinkflags.append("-framework Cocoa")
+            self.cpp_info.exelinkflags.append("-framework Foundation")
+            self.cpp_info.sharedlinkflags = self.cpp_info.exelinkflags

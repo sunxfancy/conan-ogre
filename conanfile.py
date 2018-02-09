@@ -63,7 +63,6 @@ class OgreConan(ConanFile):
     def build(self):
         cmake = CMake(self)
         srcDir = os.path.join(self.source_folder, self.folderName)
-        self.installDir = os.path.join(self.source_folder, 'install')
         options = {
             'OGRE_BUILD_TESTS': False,
             'OGRE_BUILD_TOOLS': True,
@@ -74,49 +73,34 @@ class OgreConan(ConanFile):
             'OGRE_BUILD_PLUGIN_CG': self.options.with_cg,
             'OGRE_BUILD_COMPONENT_PYTHON': self.options.with_python,
             'OGRE_BUILD_COMPONENT_JAVA': self.options.with_jni,
-            'OGRE_NODE_STORAGE_LEGACY': (self.options.node_legacy == "Map"),
-            'OGRE_USE_POCO': self.options.with_poco,
-            'OGRE_USE_BOOST': self.options.with_boost,
-            'CMAKE_INSTALL_PREFIX:': self.installDir
+            'OGRE_NODE_STORAGE_LEGACY': (self.options.node_legacy == "Map")
         }
         if not os.path.exists('build'):
             os.mkdir('build')
         cmake.configure(defs=options, source_folder=srcDir, build_folder='build')
-        cmake.build(target='install')
-
-    def package(self):
-        sdk_dir = self.installDir
-        include_dir = os.path.join(sdk_dir, 'include', 'OGRE')
-        lib_dir = os.path.join(sdk_dir, 'lib')
-        bin_dir = os.path.join(sdk_dir, 'bin')
-        dependency_dir = os.path.join(self.build_folder, 'build', 'Dependencies', 'lib')
-        self.copy(pattern="*.h", dst="include/OGRE", src=include_dir)
-        self.copy("*.lib", dst="lib", src=lib_dir, keep_path=False)
-        self.copy("*.a", dst="lib", src=lib_dir, keep_path=False)
-        self.copy("*.so*", dst="lib", src=lib_dir, keep_path=False)
-        self.copy("*.dylib", dst="lib", src=lib_dir, keep_path=False)
-        self.copy("*.framework", dst="lib", src=lib_dir, keep_path=False)
-        self.copy("*.dll", dst="bin", src=bin_dir, keep_path=False)
-        self.copy("*.so*", dst="lib", src=dependency_dir, keep_path=False)
-        self.copy("*.dylib", dst="lib", src=dependency_dir, keep_path=False)
-        self.copy("*.framework", dst="lib", src=dependency_dir, keep_path=False)
-        self.copy("*.dll", dst="bin", src=dependency_dir, keep_path=False)
+        cmake.build()
+        cmake.install()
 
     def package_info(self):
-        self.cpp_info.libs = [
-            'OgreMain',
-            'OgreOverlay',
-            'OgrePaging',
-            'OgreProperty',
-            'OgreRTShaderSystem',
-            'OgreTerrain',
-            'freetype',
-            'zzip'
-        ]
-
         is_apple = (self.settings.os == 'Macos' or self.settings.os == 'iOS')
-        if self.settings.build_type == "Debug" and not is_apple:
-            self.cpp_info.libs = [lib+'_d' for lib in self.cpp_info.libs]
-
-        if self.settings.os == 'Linux':
-            self.cpp_info.libs.append('rt')
+       
+        if is_apple:
+            self.cpp_info.libs = [
+                'freetype',
+                'zzip'
+            ]
+        else:
+            self.cpp_info.libs = [
+                'OgreMain',
+                'OgreOverlay',
+                'OgrePaging',
+                'OgreProperty',
+                'OgreRTShaderSystem',
+                'OgreTerrain',
+                'freetype',
+                'zzip'
+            ]
+            if self.settings.build_type == "Debug":
+                self.cpp_info.libs = [lib + '_d' for lib in self.cpp_info.libs]
+            if self.settings.os == 'Linux':
+                self.cpp_info.libs.append('rt')

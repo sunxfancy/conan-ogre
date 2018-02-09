@@ -22,7 +22,7 @@ class OgreConan(ConanFile):
         "node_legacy": ['Map', 'Vector']
     }
     default_options = (
-        "shared=False",
+        "shared=True",
         "use_cpp11=False",
         "with_boost=False",
         "with_poco=False",
@@ -81,6 +81,19 @@ class OgreConan(ConanFile):
         cmake.configure(defs=options, source_folder=srcDir, build_folder='build')
         cmake.build()
         cmake.install()
+
+    def package(self):
+        dependency_dir = os.path.join(self.build_folder, 'build', 'Dependencies')
+        include_dir = os.path.join(dependency_dir, 'include')
+        lib_dir = os.path.join(dependency_dir, 'lib')
+        bin_dir = os.path.join(dependency_dir, 'bin')
+        self.copy(pattern="*.h", dst="include/Dependencies", src=include_dir)
+        self.copy("*.lib", dst="lib", src=lib_dir, keep_path=False)
+        self.copy("*.dll", dst="bin", src=lib_dir, keep_path=False)
+        self.copy("*.so*", dst="lib", src=lib_dir, keep_path=False)
+        self.copy("*.dylib", dst="lib", src=lib_dir, keep_path=False)
+        self.copy("*.a", dst="lib", src=lib_dir, keep_path=False)
+        self.copy("*.dll", dst="bin", src=bin_dir, keep_path=False)
 
     def package_info(self):
         if self.options.shared:

@@ -1,6 +1,6 @@
 env:
    global:
-     - CONAN_REFERENCE: "OGRE/1.10.11.0"
+     - CONAN_REFERENCE: "OGRE/1.10.11"
      - CONAN_USERNAME: "sunxfancy"
      - CONAN_LOGIN_USERNAME: "sunxfancy"
      - CONAN_CHANNEL: "ci"
@@ -17,14 +17,6 @@ linux: &linux
 osx: &osx
    os: osx
    language: generic
-
-addons:
-  apt:
-    packages:
-      - libgles2-mesa-dev
-      - libxt-dev
-      - libxaw7-dev
-      - libsdl2-dev
 
 matrix:
    include:

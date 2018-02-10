@@ -5,7 +5,7 @@ import os
 ############### CONFIGURE THESE VALUES ##################
 default_user = "sunxfancy"
 default_channel = "ci"
-default_version = "1.10.11.0"
+default_version = "1.10.11"
 #########################################################
 
 channel = os.getenv("CONAN_CHANNEL", default_channel)

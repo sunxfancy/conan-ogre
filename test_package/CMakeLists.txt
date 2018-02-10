@@ -7,7 +7,9 @@ CONAN_BASIC_SETUP()
 SET(VERBOSE 1)
 SET(CMAKE_VERBOSE_MAKEFILE 1)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libstdc++ -lc++abi")
+if (apple)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libstdc++")
+endif()
 
 find_package(Boost COMPONENTS thread system QUIET)
 if (Boost_FOUND)
